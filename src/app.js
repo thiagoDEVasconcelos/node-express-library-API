@@ -1,5 +1,6 @@
 import express from 'express';
 import dbConnect from './config/dbConnect.js';
+import Livro from './models/Livro.js';
 
 const conexao = await dbConnect();
 
@@ -14,34 +15,33 @@ app.get('/', (req, res) => {
   res.status(200).send('Hello, World!');
 });
 
-app.get('/livros', (req, res) => {
-  res.status(200).json(livros);
+app.get('/livros', async (req, res) => {
+  const listaLivros = await Livro.find();
+  res.status(200).json(listaLivros);
 });
 
-app.get('/livros/:id', (req, res) => {
+app.get('/livros/:id', async (req, res) => {
   const id = parseInt(req.params.id);
-  const index = buscaLivro(id);
-  res.status(200).json(livros[index]);
+  const livro = await Livro.findById(id);
+  res.status(200).json(livro);
 });
 
-app.post('/livros', (req, res) => {
-  livros.push(req.body);
+app.post('/livros', async (req, res) => {
+  const livro = await Livro.create(req.body);
   console.log("entrei na rota livros usando o metodo post");
-  res.status(201).send('Livro cadastrado com sucesso!');
+  res.status(201).json(livro);
 })
 
-app.put('/livros/:id', (req, res) => {
+app.put('/livros/:id', async (req, res) => {
   const id = Number(req.params.id);
-  const index = buscaLivro(id);
-  livros[index] = req.body;
-  res.status(200).send('Livro atualizado com sucesso!');
+  const livro = await Livro.findByIdAndUpdate(id, req.body, { new: true });
+  res.status(200).json(livro);
 });
 
-app.delete('/livros/:id', (req, res) => {
+app.delete('/livros/:id', async (req, res) => {
   const id = Number(req.params.id);
-  const index = buscaLivro(id);
-  livros.splice(index, 1);
-  res.status(200).send('Livro removido com sucesso!');
+  const livro = await Livro.findByIdAndRemove(id);
+  res.status(200).json(livro);
 });
 
 export default app;
