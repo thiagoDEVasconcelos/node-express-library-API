@@ -1,18 +1,14 @@
 import express from 'express';
+import dbConnect from './config/dbConnect.js';
+
+const conexao = await dbConnect();
+
+conexao.on("error", (err) => console.error("Erro na conexão com o banco de dados: " + err));
+
+conexao.once("open", () => console.log("Conexão com o banco de dados realizada com sucesso!"));
 
 const app = express();
 app.use(express.json());
-
-const livros = [
-    {
-        id: 1,
-        título: "O Senhor dos Anéis"
-    },
-    {
-        id: 2,
-        título: "O Hobbit"
-    }
-];
 
 app.get('/', (req, res) => {
   res.status(200).send('Hello, World!');
