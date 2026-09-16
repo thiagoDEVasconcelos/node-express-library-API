@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const livroSchema = new mongoose.Schema({
+    id: {
+        type: Number,
+        required: true,
+        unique: true    
+    },
     titulo: {
         type: String,
         required: true
