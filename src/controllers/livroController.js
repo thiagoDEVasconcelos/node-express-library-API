@@ -1,3 +1,4 @@
+import { Autor } from '../models/Autor.js';
 import Livro from '../models/Livro.js';
 
 class LivroController {
@@ -26,8 +27,11 @@ class LivroController {
 
     static async criarLivro(req, res) {
         try {
-            const novoLivro = await Livro.create(req.body);
-            res.status(201).json({"message": "Livro criado com sucesso!", livro: novoLivro});
+            const novoLivro = req.body;
+            const autorEncontrado = await Autor.findById(novoLivro.autor.id);
+            const livroCompleto = { ...novoLivro, autor: autorEncontrado };
+            const livroCriado = await Livro.create(livroCompleto);
+            res.status(201).json({ message: "Livro criado com sucesso!", livro: livroCriado });
         } catch (error) {
             res.status(500).json({ message: "Falha ao cadastrar livro" });
         }
@@ -58,6 +62,16 @@ class LivroController {
             }
         } catch (error) {
             res.status(500).json({ message: "Falha ao excluir livro" });
+        }
+    }
+
+    static async listarLivrosPorEditora(req, res) {
+        const editora = req.query.editora;
+        try {
+            const livros = await Livro.find({ editora: editora });
+            res.status(200).json(livros);
+        } catch (error) {
+            res.status(500).json({ message: "Falha ao listar livros por editora" });
         }
     }
 }
