@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import mongoose, { version } from "mongoose";
+import { autorSchema } from "./Autor";
 
 const livroSchema = new mongoose.Schema({
     id: {
@@ -18,8 +19,9 @@ const livroSchema = new mongoose.Schema({
     },
     preco: {
         type: Number,
-    }
-});
+    },
+    autor: autorSchema
+}, { versionKey: false } );
 
 const Livro = mongoose.model("Livro", livroSchema);
 
