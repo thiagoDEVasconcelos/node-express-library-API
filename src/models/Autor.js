@@ -2,11 +2,11 @@ import Schema from 'mongoose';
 
 const autorSchema = new Schema({
     id: {
-        type: ObjectId,
+        type: String,
     },
     nome: {
         type: String,
-        required: true
+        required: [true, "O nome do autor é obrigatório"]
     },
     nacionalidade: {
         type: String,
