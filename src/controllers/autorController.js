@@ -6,11 +6,11 @@ class AutorController {
             const autores = await Autor.find();
             res.status(200).json(autores);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    static listarAutorPorId  = async (req, res) => {
+    static listarAutorPorId  = async (req, res, next) => {
         try {
         const id =  req.params.id;
             const autoresResultado = await Autor.findById(id);
@@ -20,11 +20,7 @@ class AutorController {
                 res.status(404).send({ message: "Id do Autor não localizado." });
             }
         } catch (erro) {
-            if (erro instanceof mongoose.Error.CastError) {
-                res.status(400).send({message: "Um ou mais dados fornecidos estão incorretos."});
-            } else {
-                res.status(500).send({message: "Erro interno de servidor."});
-            }
+            next(erro);
         }
     };
 
@@ -33,7 +29,7 @@ class AutorController {
             const novoAutor = await Autor.create(req.body);
             res.status(201).json({ message: "Autor criado com sucesso!", autor: novoAutor });
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
@@ -47,7 +43,7 @@ class AutorController {
                 res.status(404).json({ message: "Autor não encontrado" });
             }
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
@@ -61,7 +57,7 @@ class AutorController {
                 res.status(404).json({ message: "Autor não encontrado" });
             }
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 }
