@@ -5,8 +5,8 @@ class AutorController {
         try {
             const autores = await Autor.find();
             res.status(200).json(autores);
-        } catch (error) {
-            next(error);
+        } catch (erro) {
+            next(erro);
         }
     }
 
@@ -28,38 +28,43 @@ class AutorController {
         try {
             const novoAutor = await Autor.create(req.body);
             res.status(201).json({ message: "Autor criado com sucesso!", autor: novoAutor });
-        } catch (error) {
-            next(error);
+        } catch (erro) {
+            next(erro);
         }
     }
 
-    static async atualizarAutor(req, res) {
-        const id = req.params.id;
+    static atualizarAutor = async (req, res, next) => {
         try {
-            const autorAtualizado = await Autor.findByIdAndUpdate(id, req.body, { new: true });
-            if (autorAtualizado) {
-                res.status(200).json(autorAtualizado);
-            } else {
-                res.status(404).json({ message: "Autor não encontrado" });
-            }
-        } catch (error) {
-            next(error);
-        }
-    }
+        const id = req.params.id;
 
-    static async excluirAutor(req, res) {
-        const id = req.params.id;
-        try {
-            const autorExcluido = await Autor.findByIdAndDelete(id);
-            if (autorExcluido) {
-                res.status(200).json({ message: "Autor excluído com sucesso!" });
-            } else {
-                res.status(404).json({ message: "Autor não encontrado" });
-            }
-        } catch (error) {
-            next(error);
+        const autorResultado = await Autor.findByIdAndUpdate(id, {$set: req.body});
+
+        if (autorResultado !== null) {
+            res.status(200).send({message: "Autor atualizado com sucesso"});
+        } else {
+            next(new NaoEncontrado("Id do Autor não localizado."));
         }
-    }
+
+        } catch (erro) {
+        next(erro);
+        }
+    };
+
+    static excluirAutor = async (req, res, next) => {
+        try {
+        const id = req.params.id;
+
+        const autorResultado = await Autor.findByIdAndDelete(id);
+
+        if (autorResultado !== null) {
+            res.status(200).send({message: "Autor removido com sucesso"});
+        } else {
+            next(new NaoEncontrado("Id do Autor não localizado."));
+        }
+        } catch (erro) {
+        next(erro);
+        }
+    };
 }
 
 export default AutorController;
