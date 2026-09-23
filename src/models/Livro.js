@@ -1,4 +1,4 @@
-import mongoose, { version } from "mongoose";
+import mongoose from "mongoose";
 import { autorSchema } from "./Autor";
 
 const livroSchema = new mongoose.Schema({
