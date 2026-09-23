@@ -75,19 +75,23 @@ class LivroController {
 
     static async listarLivrosPorFiltro(req, res, next) {
         try {
-            const { editora, titulo } = req.query;
+            const { editora, titulo, nomeAutor } = req.query;
             
             const filtros = {};
 
-            if (editora) {
-                filtros.editora = editora;
-            }
+            if (editora) filtros.editora = editora;
 
-            if (titulo) {
-                filtros.titulo = titulo;
+            if (titulo) filtros.titulo = { $regex: titulo, $options: "i" };
+
+            if (nomeAutor) {
+                const autor = Autor.findOne({ nome: nomeAutor });
+
+                const autorId = autor._id;
+
+                filtros.autor = autorId;
             }
             
-            const livros = await Livro.find(filtros);
+            const livros = await Livro.find(filtros).where({ numeroDePaginas: { $gte: 10, $lte: 5000 } }).populate("autor");
             res.status(200).json(livros);
         } catch (erro) {
             next(erro);
