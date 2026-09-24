@@ -4,7 +4,8 @@ import { Livro } from '../models/index.js';
 class LivroController {
     static async listarLivros(req, res, next) {
         try{
-            const listaLivros = await Livro.find();
+            const { limite = 5, pagina = 1 } = req.body; 
+            const listaLivros = await Livro.find().skip((pagina - 1) * limite).limit(limite).populate("autor").exec();
             res.status(200).json(listaLivros);
         } catch (erro) {
             next(erro);
